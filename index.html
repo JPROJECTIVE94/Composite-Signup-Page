@@ -698,8 +698,11 @@ for (var i = 0; i < cards.length * 2; i++) {
 </script>
 
 <script>
+var submitted = false;
 document.getElementById('submitBtn').addEventListener('click', function(e) {
   e.preventDefault();
+  if (submitted) return;
+
   var name = document.getElementById('fname').value.trim();
   var email = document.getElementById('femail').value.trim();
   var tg = document.getElementById('ftg').value.trim();
@@ -709,8 +712,12 @@ document.getElementById('submitBtn').addEventListener('click', function(e) {
   if (document.getElementById('r2').checked) roles.push('Liquidity provider');
   if (document.getElementById('r3').checked) roles.push('Exchange / Terminal');
 
-  if (!name || !email) {
-    alert('Please enter your name and email.');
+  if (!name) {
+    alert('Please enter your name.');
+    return;
+  }
+  if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+    alert('Please enter a valid email address.');
     return;
   }
   if (!legal) {
@@ -718,6 +725,7 @@ document.getElementById('submitBtn').addEventListener('click', function(e) {
     return;
   }
 
+  submitted = true;
   var btn = this;
   btn.textContent = 'Submitting...';
   btn.style.opacity = '0.6';
@@ -735,6 +743,7 @@ document.getElementById('submitBtn').addEventListener('click', function(e) {
       '<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0 auto;font-weight:300;white-space:nowrap">Our people will contact your people.</p>' +
     '</div>';
   }).catch(function() {
+    submitted = false;
     btn.textContent = 'Request access →';
     btn.style.opacity = '1';
     btn.disabled = false;
