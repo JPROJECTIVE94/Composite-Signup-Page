@@ -195,8 +195,9 @@
     border-bottom: 1px solid var(--border);
     padding: 18px 0;
     display: flex;
-    align-items: center;
-    gap: 16px;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
   .role-prefix {
@@ -209,6 +210,7 @@
   .role-select {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
   }
 
   .role-opt { display: none; }
@@ -539,13 +541,13 @@
     <div class="form-inner">
 
       <div class="field">
-        <input type="text" placeholder="Name" />
+        <input type="text" placeholder="Name" id="fname" />
       </div>
       <div class="field">
-        <input type="email" placeholder="Email" />
+        <input type="email" placeholder="Email" id="femail" />
       </div>
       <div class="field">
-        <input type="text" placeholder="Telegram (optional)" />
+        <input type="text" placeholder="Telegram (optional)" id="ftg" />
       </div>
 
       <div class="role-row">
@@ -569,8 +571,9 @@
       </div>
 
       <div class="submit-wrap">
-        <button class="submit-btn">Request access →</button>
+        <button class="submit-btn" id="submitBtn">Request access →</button>
       </div>
+      <div id="successMsg" style="display:none;text-align:center;padding:16px 0;color:var(--accent);font-size:13px;letter-spacing:0.02em;">Request submitted. We'll be in touch.</div>
 
     </div>
   </div>
@@ -676,6 +679,59 @@ for (var i = 0; i < cards.length * 2; i++) {
     });
   })(i);
 }
+</script>
+
+<script>
+document.getElementById('submitBtn').addEventListener('click', function(e) {
+  e.preventDefault();
+  var name = document.getElementById('fname').value.trim();
+  var email = document.getElementById('femail').value.trim();
+  var tg = document.getElementById('ftg').value.trim();
+  var legal = document.getElementById('legal').checked;
+  var roles = [];
+  if (document.getElementById('r1').checked) roles.push('Trader');
+  if (document.getElementById('r2').checked) roles.push('Liquidity provider');
+  if (document.getElementById('r3').checked) roles.push('Exchange / Terminal');
+
+  if (!name || !email) {
+    alert('Please enter your name and email.');
+    return;
+  }
+  if (!legal) {
+    alert('Please confirm the legal disclaimer.');
+    return;
+  }
+
+  var btn = this;
+  btn.textContent = 'Submitting...';
+  btn.style.opacity = '0.6';
+  btn.disabled = true;
+
+  fetch('https://script.google.com/macros/s/AKfycbyMPpNjne7xR2Q7mGh9IrklvS2hwsgWcb44lXdEqVA2mRqdZsFoMiyRuPzvH_24v2J2yA/exec', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      telegram: tg,
+      roles: roles.join(', ')
+    })
+  }).then(function() {
+    document.querySelector('.form-section').innerHTML = '<div style="max-width:480px;margin:0 auto;text-align:center;padding:80px 32px">' +
+      '<div style="width:56px;height:56px;border-radius:50%;background:var(--accent-dim);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 28px">' +
+        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' +
+      '</div>' +
+      '<h2 style="font-family:Instrument Serif,serif;font-size:36px;color:var(--text);margin-bottom:12px;letter-spacing:-0.02em">You\'re on the list</h2>' +
+      '<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0 auto;font-weight:300;white-space:nowrap">We will have our people contact your people.</p>' +
+    '</div>';
+  }).catch(function() {
+    btn.textContent = 'Request access →';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again.');
+  });
+});
 </script>
 
 </body>
