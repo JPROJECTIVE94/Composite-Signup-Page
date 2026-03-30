@@ -723,17 +723,10 @@ document.getElementById('submitBtn').addEventListener('click', function(e) {
   btn.style.opacity = '0.6';
   btn.disabled = true;
 
-  fetch('https://script.google.com/macros/s/AKfycbyMPpNjne7xR2Q7mGh9IrklvS2hwsgWcb44lXdEqVA2mRqdZsFoMiyRuPzvH_24v2J2yA/exec', {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: name,
-      email: email,
-      telegram: tg,
-      roles: roles.join(', ')
-    })
-  }).then(function() {
+  var params = 'name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&telegram=' + encodeURIComponent(tg) + '&roles=' + encodeURIComponent(roles.join(', '));
+  var url = 'https://script.google.com/macros/s/AKfycbyKsEwSSHpmhlR2ALK5ppkYH5X1NLUaFPxrRPJ55O9DOofsDJDLsY2lfxDjzaIjxNdjUQ/exec?' + params;
+
+  fetch(url, { mode: 'no-cors' }).then(function() {
     document.querySelector('.form-section').innerHTML = '<div style="max-width:480px;margin:0 auto;text-align:center;padding:80px 32px">' +
       '<div style="width:56px;height:56px;border-radius:50%;background:var(--accent-dim);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 28px">' +
         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' +
