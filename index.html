@@ -68,6 +68,12 @@
     z-index: 1;
   }
 
+  @media (max-width: 600px) {
+    nav { padding: 20px 20px; }
+    .hero { padding: 32px 20px 40px; }
+    .form-section { padding: 40px 20px 48px; }
+  }
+
   .logo {
     font-family: 'Instrument Serif', serif;
     font-size: 20px;
@@ -187,6 +193,16 @@
     color: var(--text);
     outline: none;
     letter-spacing: 0.01em;
+  }
+
+  .field input:-webkit-autofill,
+  .field input:-webkit-autofill:hover,
+  .field input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--bg) inset;
+    -webkit-text-fill-color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    caret-color: var(--text);
   }
 
   .field input::placeholder { color: var(--muted); }
@@ -723,7 +739,7 @@ document.getElementById('submitBtn').addEventListener('click', function(e) {
         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' +
       '</div>' +
       '<h2 style="font-family:Instrument Serif,serif;font-size:36px;color:var(--text);margin-bottom:12px;letter-spacing:-0.02em">You\'re on the list</h2>' +
-      '<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0 auto;font-weight:300;white-space:nowrap">We will have our people contact your people.</p>' +
+      '<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0 auto;font-weight:300;white-space:nowrap">Our people will contact your people.</p>' +
     '</div>';
   }).catch(function() {
     btn.textContent = 'Request access →';
