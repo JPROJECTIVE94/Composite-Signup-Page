@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Composite — Request Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0c0b;
+    --surface: #141413;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.18);
+    --text: #f0ede8;
+    --muted: #7a7870;
+    --accent: #d4b896;
+    --accent-dim: rgba(212,184,150,0.12);
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(212,184,150,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 100% 80% at 50% 0%, black 0%, transparent 80%);
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 56px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .invite-only {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    background: linear-gradient(
+      90deg,
+      #8a7a66 0%,
+      #d4b896 35%,
+      #f0e0c8 50%,
+      #d4b896 65%,
+      #8a7a66 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: sheen 3.5s linear infinite;
+  }
+
+  @keyframes sheen {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+
+  .hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 32px 56px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-label::before,
+  .hero-label::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--border-hover);
+  }
+
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    margin-top: 20px;
+    max-width: 420px;
+    line-height: 1.7;
+  }
+
+  .form-section {
+    border-top: 1px solid var(--border);
+    padding: 56px 56px 64px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .field {
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    transition: border-color 0.15s;
+  }
+
+  .field:focus-within { border-color: var(--border-hover); }
+
+  .field input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 18px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    letter-spacing: 0.01em;
+  }
+
+  .field input::placeholder { color: var(--muted); }
+
+  .role-row {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .role-prefix {
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .role-select {
+    display: flex;
+    gap: 8px;
+  }
+
+  .role-opt { display: none; }
+
+  .role-label {
+    display: block;
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .role-label:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+
+  .role-opt:checked + .role-label {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .legal-row {
+    padding: 20px 0 0;
+  }
+
+  .legal-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .legal-box {
+    display: block;
+    min-width: 14px;
+    height: 14px;
+    margin-top: 2px;
+    border: 1px solid var(--border-hover);
+    border-radius: 2px;
+    background: transparent;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  #legal:checked + .legal-label .legal-box {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+  }
+
+  #legal:checked + .legal-label .legal-box::after {
+    content: '';
+    position: absolute;
+    top: 1px; left: 3px;
+    width: 5px; height: 7px;
+    border: 1.5px solid var(--accent);
+    border-top: none; border-left: none;
+    transform: rotate(45deg);
+  }
+
+  .legal-text {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.65;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+  }
+
+  .submit-wrap {
+    margin-top: 32px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #1a1814;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+
+  .submit-btn:hover { opacity: 0.88; }
+  .submit-btn:active { transform: scale(0.99); }
+
+  .carousel-section {
+    position: relative;
+    z-index: 1;
+    padding: 0 0 48px;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    animation: scroll 60s linear infinite;
+  }
+
+  .carousel-track:hover { animation-play-state: paused; }
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .mc {
+    width: 173px;
+    flex-shrink: 0;
+    background: #111318;
+    border-radius: 7px;
+    border: 1px solid #252830;
+    font-family: 'DM Mono', monospace;
+    overflow: hidden;
+  }
+
+  .mc-head {
+    background: #0d0f14;
+    padding: 5px 7px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-bottom: 1px solid #1e2028;
+  }
+
+  .mc-pm { flex-shrink: 0; opacity: 0.35; }
+
+  .mc-q {
+    color: #e8eaf0;
+    font-size: 8px;
+    font-weight: 400;
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .mc-tag {
+    font-size: 7px;
+    color: #6b6f84;
+    background: #1a1d26;
+    border: 1px solid #2a2d36;
+    border-radius: 3px;
+    padding: 1px 5px;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .mc-tag-crypto { color: #EF9F27; background: rgba(239,159,39,0.12); border-color: rgba(239,159,39,0.3); }
+  .mc-tag-elections { color: #AFA9EC; background: rgba(175,169,236,0.12); border-color: rgba(175,169,236,0.3); }
+  .mc-tag-sports { color: #85B7EB; background: rgba(133,183,235,0.12); border-color: rgba(133,183,235,0.3); }
+  .mc-tag-macro { color: #FAC775; background: rgba(250,199,117,0.12); border-color: rgba(250,199,117,0.3); }
+
+  .mc-side {
+    padding: 4px 7px 1px;
+    display: flex;
+  }
+
+  .mc-side-tag {
+    font-size: 7px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-weight: 400;
+    margin-left: auto;
+    letter-spacing: 0.02em;
+  }
+
+  .mc-side-y { background: #0d2218; color: #22c77a; border: 1px solid #1D9E75; }
+  .mc-side-n { background: #1a1111; color: #f87171; border: 1px solid #7f1d1d; }
+
+  .mc-btns { display: flex; gap: 4px; padding: 4px 7px; }
+
+  .mc-btn {
+    flex: 1;
+    border-radius: 4px;
+    padding: 3px 4px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 400;
+    line-height: 1;
+    border: 1px solid;
+    cursor: pointer;
+  }
+
+  .mc-btn-sub {
+    font-size: 7px;
+    margin-top: 1px;
+    font-weight: 300;
+  }
+
+  .mc-y-on  { background: #0d2218; border-color: #1D9E75; color: #22c77a; }
+  .mc-y-on .mc-btn-sub { color: #1D9E75; }
+  .mc-y-off { background: #1a1d26; border-color: #2a2d36; color: #5a5e70; }
+  .mc-y-off .mc-btn-sub { color: #5a5e70; }
+  .mc-n-on  { background: #1a1111; border-color: #a32d2d; color: #f87171; }
+  .mc-n-on .mc-btn-sub { color: #a32d2d; }
+  .mc-n-off { background: #1a1d26; border-color: #2a2d36; color: #5a5e70; }
+  .mc-n-off .mc-btn-sub { color: #5a5e70; }
+
+  .mc-bar { height: 2px; background: #1e2028; margin: 0 7px 3px; border-radius: 2px; overflow: hidden; }
+  .mc-bar-fill { height: 100%; border-radius: 2px; }
+  .mc-bar-g { background: #22c77a; }
+  .mc-bar-r { background: #f87171; }
+
+  .mc-row { display: flex; justify-content: space-between; padding: 0 7px 2px; }
+  .mc-rl { font-size: 8px; color: #5a5e70; }
+  .mc-rv { font-size: 8px; color: #c8cad8; font-weight: 400; }
+  .mc-rv-hl { font-size: 8px; color: #ffffff; font-weight: 500; }
+
+  .mc-div { height: 1px; background: #1e2028; margin: 2px 7px 3px; }
+
+  .mc-lev {
+    margin: 0 7px 3px;
+    padding: 4px 6px;
+    background: #0d0f14;
+    border: 1px solid #1e2028;
+    border-radius: 4px;
+  }
+
+  .mc-lev-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+  .mc-lev-label { font-size: 8px; color: #5a5e70; }
+  .mc-lev-val-g { font-size: 8px; color: #22c77a; font-weight: 400; }
+  .mc-lev-val-r { font-size: 8px; color: #f87171; font-weight: 400; }
+
+  .mc-lev-track { position: relative; width: 100%; height: 10px; display: flex; align-items: center; }
+  .mc-lev-bg { position: absolute; width: 100%; height: 2px; background: #1e2028; border-radius: 2px; }
+  .mc-lev-fill { position: absolute; height: 2px; border-radius: 2px; pointer-events: none; }
+  .mc-lev-fill-g { background: #22c77a; }
+  .mc-lev-fill-r { background: #f87171; }
+
+  .mc-lev input[type=range] {
+    position: relative;
+    width: 100%;
+    height: 2px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    z-index: 2;
+    margin: 0;
+  }
+
+  .mc-lev input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #22c77a;
+    border: 1.5px solid #111318;
+    cursor: pointer;
+  }
+
+  .mc-lev input[type=range]::-moz-range-thumb {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #22c77a;
+    border: 1.5px solid #111318;
+    cursor: pointer;
+  }
+
+  .mc-lev.red input[type=range]::-webkit-slider-thumb { background: #f87171; }
+  .mc-lev.red input[type=range]::-moz-range-thumb { background: #f87171; }
+
+  .mc-lev input[type=range]::-webkit-slider-runnable-track { height: 2px; background: transparent; }
+  .mc-lev input[type=range]::-moz-range-track { height: 2px; background: transparent; }
+
+  .mc-lev-bot { display: flex; justify-content: space-between; margin-top: 3px; }
+  .mc-lev-nt { font-size: 7px; color: #5a5e70; }
+  .mc-lev-nv { font-size: 7px; color: #c8cad8; font-weight: 400; }
+
+  .mc-pnl {
+    margin: 0 7px 3px;
+    padding: 3px 6px;
+    border-radius: 4px;
+  }
+
+  .mc-pnl-y { background: #0d2218; border: 1px solid #1D9E75; }
+  .mc-pnl-n { background: #1a1111; border: 1px solid #7f1d1d; }
+
+  .mc-pnl-t { font-size: 7px; color: #5a5e70; margin-bottom: 1px; }
+  .mc-pnl-vg { font-size: 9px; color: #22c77a; font-weight: 400; }
+  .mc-pnl-vr { font-size: 9px; color: #f87171; font-weight: 400; }
+  .mc-pnl-rg { font-size: 7px; color: #1D9E75; }
+  .mc-pnl-rr { font-size: 7px; color: #ef4444; }
+
+  .mc-foot {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 7px;
+    background: #0d0f14;
+    border-top: 1px solid #1e2028;
+  }
+
+  .mc-fs { font-size: 7px; color: #ffffff; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="glow"></div>
+  <div class="grid-lines"></div>
+
+  <nav>
+    <div class="logo">Composite</div>
+    <div class="invite-only">Invite Only</div>
+  </nav>
+
+  <div class="hero">
+    <h1>Leverage <em>every</em><br>outcome.</h1>
+  </div>
+
+  <div class="carousel-section">
+    <div class="carousel-track" id="track"></div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-inner">
+
+      <div class="field">
+        <input type="text" placeholder="Name" />
+      </div>
+      <div class="field">
+        <input type="email" placeholder="Email" />
+      </div>
+      <div class="field">
+        <input type="text" placeholder="Telegram (optional)" />
+      </div>
+
+      <div class="role-row">
+        <span class="role-prefix">I am a</span>
+        <div class="role-select">
+          <input type="checkbox" name="role" id="r1" class="role-opt">
+          <label for="r1" class="role-label">Trader</label>
+          <input type="checkbox" name="role" id="r2" class="role-opt">
+          <label for="r2" class="role-label">Liquidity provider</label>
+          <input type="checkbox" name="role" id="r3" class="role-opt">
+          <label for="r3" class="role-label">Exchange / Terminal</label>
+        </div>
+      </div>
+
+      <div class="legal-row">
+        <input type="checkbox" id="legal" style="display:none;">
+        <label for="legal" class="legal-label">
+          <span class="legal-box"></span>
+          <span class="legal-text">I confirm that I am legally authorized to use Polymarket in my jurisdiction. I understand that Composite Protocol assumes no legal liability for my use of the platform or any connected prediction market venue. It is my sole responsibility to ensure compliance with applicable laws and regulations.</span>
+        </label>
+      </div>
+
+      <div class="submit-wrap">
+        <button class="submit-btn">Request access →</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+var cards = [
+  {q:'Will the Fed cut rates in Q3?',tag:'Macro',yp:50,side:'yes',margin:100,lev:2,vol:'$1.9M',ex:'pm'},
+  {q:'Bitcoin above $100K in April?',tag:'Crypto',yp:65,side:'yes',margin:100,lev:4,vol:'$4.1M',ex:'pm'},
+  {q:'Thunder win NBA championship?',tag:'Sports',yp:38,side:'yes',margin:50,lev:5,vol:'$2.3M',ex:'kalshi'},
+  {q:'Fed holds steady in April?',tag:'Macro',yp:97,side:'no',margin:100,lev:3,vol:'$2.2M',ex:'kalshi'},
+  {q:'US-Iran ceasefire by June?',tag:'Geopolitics',yp:59,side:'no',margin:200,lev:6,vol:'$3.2M',ex:'pm'},
+  {q:'Trump visits China by June?',tag:'Politics',yp:83,side:'yes',margin:75,lev:3,vol:'$1.6M',ex:'kalshi'},
+  {q:'TISZA wins Hungary election?',tag:'Elections',yp:67,side:'yes',margin:150,lev:7,vol:'$1.3M',ex:'pm'},
+  {q:'Crude oil hits $80 by April?',tag:'Commodities',yp:45,side:'no',margin:100,lev:4,vol:'$3.8M',ex:'kalshi'}
+];
+
+var pmIcon = '<img width="11" height="11" style="border-radius:2px;opacity:0.45;flex-shrink:0;object-fit:cover;display:block" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAABAGlDQ1BpY2MAABiVY2BgPMEABCwGDAy5eSVFQe5OChGRUQrsDxgYgRAMEpOLCxhwA6Cqb9cgai/r4lGHC3CmpBYnA+kPQKxSBLQcaKQIkC2SDmFrgNhJELYNiF1eUlACZAeA2EUhQc5AdgqQrZGOxE5CYicXFIHU9wDZNrk5pckIdzPwpOaFBgNpDiCWYShmCGJwZ3AC+R+iJH8RA4PFVwYG5gkIsaSZDAzbWxkYJG4hxFQWMDDwtzAwbDuPEEOESUFiUSJYiAWImdLSGBg+LWdg4I1kYBC+wMDAFQ0LCBxuUwC7zZ0hHwjTGXIYUoEingx5DMkMekCWEYMBgyGDGQCm1j8/yRb+6wAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABTVBMVEUvXP8uW/4vXP4wXf4yXv4uXP4xXf4oVv8fUP8mVf8wXP8uW/8xXf8rWf4jUv8eT/4nVv1Hb/yGoPxkhfsnVv4wXf8yXv8nVf8fT/4hUf43Yvxmh/umufvl6vz8/fz///6uv/wlVP8fUP4uW/1Rd/uKo/vL1/z5+vv///zv8vu2xvtpivvg5/y3xv0qWP5fgvunu/vZ4fz7/PzT3fyTqvtVevstW/wgUP4XSf7a4v26yPwrWf3W3/z////9/f2qvPlDa/oVR/wPQ/4eTv82Yv8qWP3d5P25yP3c4/3k6vvU3fv///35+vzP2fyPp/tSd/wsWf0YSv4oV/3o7f2mufwdTvxYfPyOp/vQ2vzv8/yyw/vi6fy4x/3n7P2tv/weTv4rWf8iUv4kU/02Yf1dgfuZsPrj6fr+/v2vwPyZsPvv8vynu/ppifvg5vwnVf7HvtEPAAAAAWJLR0Q90G1RWQAAAAd0SU1FB+oDHhQaGtoNwDUAAADhSURBVCjPY2CgDDAyMbMwM6KKMbEyMbGxMLBzcHJxIwmzApXy8PLxCwgKCYuIMsFNYBPjFpeQlJKWkZWTV5AUg0pwczMpKimrqKqpa2hqaevoSsAkmLj09A0M5YyMTUzNzC0srfjhEgzWNrZ29g6OTs6MLq5u7hJIEh6eXt4+vn7+AeaBKDqCgkNCw8IjjDQio4SjY5B0BMXGxSckJiWnpKaly2dIokjwgyUy0SVgRmWhGQWyPB2b5UjO1UN2LtCD2dg8iAgSb02tnFxEkEACMQ8zEPEEO9gmJqwRhSdqiQYAyAUyoykxOVIAAAAedEVYdGljYzpjb3B5cmlnaHQAR29vZ2xlIEluYy4gMjAxNqwLMzgAAAAUdEVYdGljYzpkZXNjcmlwdGlvbgBzUkdCupBzBwAAAABJRU5ErkJggg=="/>';
+var kalshiIcon = '<img width="11" height="11" style="border-radius:2px;opacity:0.45;flex-shrink:0;object-fit:cover;display:block" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAABAGlDQ1BpY2MAABiVY2BgPMEABCwGDAy5eSVFQe5OChGRUQrsDxgYgRAMEpOLCxhwA6Cqb9cgai/r4lGHC3CmpBYnA+kPQKxSBLQcaKQIkC2SDmFrgNhJELYNiF1eUlACZAeA2EUhQc5AdgqQrZGOxE5CYicXFIHU9wDZNrk5pckIdzPwpOaFBgNpDiCWYShmCGJwZ3AC+R+iJH8RA4PFVwYG5gkIsaSZDAzbWxkYJG4hxFQWMDDwtzAwbDuPEEOESUFiUSJYiAWImdLSGBg+LWdg4I1kYBC+wMDAFQ0LCBxuUwC7zZ0hHwjTGXIYUoEingx5DMkMekCWEYMBgyGDGQCm1j8/yRb+6wAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAACQ1BMVEX3+Pj19/b/+f7q9vOr79qJ7M2D68qE68qI7Myo79nn9vL29/f39/f/+f2g7tYY36EA3JQA25IA25EA3JMU35+V7dL/+fyc7tYA2o8B3JMB3ZcC3ZgB3JQA2o2P7dAd358D3ZgA3JYA3ZcA3ZYA3JUU3pze9e+m7tcA25OX7dGA68hw6cN46sZo6MB56sZp6MAC3ZcA3pcA4JkA2pUA35gA3pgC3JcC3pgA15MAzIwA5ZwAz40Ay4sA4ZkA0I4A05AA4ZoA2ZQBzYwA1ZIC3pkA2ZAC6aAAoW4BXUABy4sCNSUBv4MAw4UA8qUCaEgBl2gA5JwAzYwBx4gCTDUB0Y8A66ECjWECr3gC5p4ApHABOSgCMSMBoW8A6J8DbUsCSzQCh10BcU4Ca0oCWz8CYEICkWQBOCcDcU4Bn20C558Aq3UBHhUCMSIBgVkB4JkDZ0cCZUYBTDUCdFACZ0cCZEUDe1UBRzIBzo0BTTYCOyoBmWkC66EA2JAC6qEAnWwC3JYCKh4CiV8COikDZUYCPSsCVTsCbEsDcE4DUjkB3JYCUjkDNiYBmWgA2pEC4JoAzIsBsnoA6J4Bun8BuH4BuX8BrXYBvYEBrncByYkBsXkBpXEB05ABtn0CsHkAyooC4ZoA5JsA554A5p0A6Z8A5Z0A25UA25Z86sds6MGa7dOL7M3Y9OwP3ZoI3ZfN8+d36sYA2YsD3ZcA2Yxq6MD39/j6+Pps6MJh5773+Pn4+PjC8uNN5bZH5LNM5bW98eH++f3///+ieimCAAAAAWJLR0TAE2Hf+AAAAAd0SU1FB+oDHhQjIBKFlD0AAAGGSURBVCjPY2BgZGJmYWVjhwM2Dk4uJm4eBkZePn4BQSEkICgsIirGzcAkLiEpJY0CpGRk5ZgYuOQFFBSVlJSVgQhMKCkpSquoqjGoa0gDxVGBorSgJoOWoLQSBpAW1GbQEcImIaTLoCckraioBEIgAohBtLSQPlDCwNDI2MgIKGJiChQFMoxMzcAS5haWVtY2RrZKdvZGDo5OpobWzi4gCVc3dw9PL28TH18//4DAoOCQ0LDwCFewRGRUdExsXHxCYlJySmpacFJ6hhtYIjMrOyc3L7+gsKg4paS0rLyisqq6BiRRW1dW39DY1NzS2tYe3xHc2dXdA5bo7eufMHHS5ClTp02fMXPW7AmKc+bOm98LcpWZkZXxggUBCxcsMlq02MRKKWCJEcS50opLlZYuWwpEikuNFcEEyIPAIFHGGiTLsUusYFgpiDXYVzGsXqMohSajKKW0dh0D0/oNG6UNUID0xk2beRm2bN2mIiSIAoQEtu/YycDDwLtLe/ceJLB32779O3kAw4CJhV6E44AAAAAedEVYdGljYzpjb3B5cmlnaHQAR29vZ2xlIEluYy4gMjAxNqwLMzgAAAAUdEVYdGljYzpkZXNjcmlwdGlvbgBzUkdCupBzBwAAAABJRU5ErkJggg=="/>';
+
+function buildCard(c, idx) {
+  var isYes = c.side === 'yes';
+  var np = 100 - c.yp;
+  var entryPrice = isYes ? c.yp / 100 : np / 100;
+  var notional = c.margin * c.lev;
+  var contracts = notional / entryPrice;
+  var profit = Math.round(contracts - notional);
+  var ret = Math.round(profit / c.margin * 100);
+  var fillPct = ((c.lev - 1) / 9 * 100).toFixed(0);
+  var sideLabel = isYes ? 'YES side' : 'NO side';
+  var sideClass = isYes ? 'mc-side-y' : 'mc-side-n';
+  var yBtnClass = isYes ? 'mc-y-on' : 'mc-y-off';
+  var nBtnClass = isYes ? 'mc-n-off' : 'mc-n-on';
+  var barClass = isYes ? 'mc-bar-g' : 'mc-bar-r';
+  var barW = isYes ? c.yp : np;
+  var levClass = isYes ? '' : ' red';
+  var levValClass = isYes ? 'mc-lev-val-g' : 'mc-lev-val-r';
+  var fillClass = isYes ? 'mc-lev-fill-g' : 'mc-lev-fill-r';
+  var pnlClass = isYes ? 'mc-pnl-y' : 'mc-pnl-n';
+  var pvClass = isYes ? 'mc-pnl-vg' : 'mc-pnl-vr';
+  var prClass = isYes ? 'mc-pnl-rg' : 'mc-pnl-rr';
+  var winLabel = isYes ? 'If YES wins' : 'If NO wins';
+
+  var tagClass = 'mc-tag';
+  var tl = c.tag.toLowerCase();
+  if (tl === 'crypto') tagClass += ' mc-tag-crypto';
+  else if (tl === 'elections') tagClass += ' mc-tag-elections';
+  else if (tl === 'sports') tagClass += ' mc-tag-sports';
+  else if (tl === 'macro') tagClass += ' mc-tag-macro';
+
+  var icon = c.ex === 'kalshi' ? kalshiIcon : pmIcon;
+
+  return '<div class="mc">' +
+    '<div class="mc-head">' + icon + '<span class="mc-q">' + c.q + '</span><span class="' + tagClass + '">' + c.tag + '</span></div>' +
+    '<div class="mc-side"><span class="mc-side-tag ' + sideClass + '">' + sideLabel + '</span></div>' +
+    '<div class="mc-btns">' +
+      '<div class="mc-btn ' + yBtnClass + '"><div>YES</div><div class="mc-btn-sub">' + c.yp + 'c</div></div>' +
+      '<div class="mc-btn ' + nBtnClass + '"><div>NO</div><div class="mc-btn-sub">' + np + 'c</div></div>' +
+    '</div>' +
+    '<div class="mc-bar"><div class="mc-bar-fill ' + barClass + '" style="width:' + barW + '%"></div></div>' +
+    '<div class="mc-row"><span class="mc-rl">Volume</span><span class="mc-rv-hl">' + c.vol + '</span></div>' +
+    '<div class="mc-row"><span class="mc-rl">Margin</span><span class="mc-rv">$' + c.margin + '</span></div>' +
+    '<div class="mc-div"></div>' +
+    '<div class="mc-lev' + levClass + '">' +
+      '<div class="mc-lev-top"><span class="mc-lev-label">Leverage</span><span class="' + levValClass + '" id="lv' + idx + '">' + c.lev + 'x</span></div>' +
+      '<div class="mc-lev-track"><div class="mc-lev-bg"></div><div class="mc-lev-fill ' + fillClass + '" id="lf' + idx + '" style="width:' + fillPct + '%"></div>' +
+      '<input type="range" min="1" max="10" step="1" value="' + c.lev + '" id="ls' + idx + '"/></div>' +
+    '</div>' +
+    '<div class="mc-pnl ' + pnlClass + '">' +
+      '<div class="mc-pnl-t">' + winLabel + '</div>' +
+      '<div class="' + pvClass + '" id="pv' + idx + '">+$' + profit.toLocaleString() + '</div>' +
+      '<div class="' + prClass + '" id="pr' + idx + '">+' + ret + '% return on margin</div>' +
+    '</div>' +
+    '<div class="mc-foot"><span class="mc-fs">' + c.vol + ' vol</span></div>' +
+  '</div>';
+}
+
+var track = document.getElementById('track');
+var html = '';
+for (var i = 0; i < cards.length; i++) html += buildCard(cards[i], i);
+for (var i = 0; i < cards.length; i++) html += buildCard(cards[i], i + cards.length);
+track.innerHTML = html;
+
+for (var i = 0; i < cards.length * 2; i++) {
+  (function(idx) {
+    var c = cards[idx % cards.length];
+    var s = document.getElementById('ls' + idx);
+    if (!s) return;
+    s.addEventListener('input', function() {
+      var lev = parseInt(this.value);
+      var isYes = c.side === 'yes';
+      var entryPrice = isYes ? c.yp / 100 : (100 - c.yp) / 100;
+      var notional = c.margin * lev;
+      var contracts = notional / entryPrice;
+      var profit = Math.round(contracts - notional);
+      var ret = Math.round(profit / c.margin * 100);
+      document.getElementById('lv' + idx).textContent = lev + 'x';
+      document.getElementById('lf' + idx).style.width = ((lev - 1) / 9 * 100) + '%';
+      var sign = profit >= 0 ? '+' : '';
+      document.getElementById('pv' + idx).textContent = sign + '$' + Math.abs(profit).toLocaleString();
+      document.getElementById('pr' + idx).textContent = sign + ret + '% return on margin';
+    });
+  })(i);
+}
+</script>
+
+</body>
+</html>
