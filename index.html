@@ -2,215 +2,348 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0b">
+<meta name="description" content="Composite. One market at a time. Swipe to back it. Real-money sports prediction routed to Polymarket.">
+<meta property="og:title" content="Composite — one market at a time. Swipe to back it.">
+<meta property="og:description" content="Your take on the game, on the record, in one swipe. Real money, $2 minimum.">
 <title>Composite</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #000000;
-    --border: rgba(255,255,255,0.10);
-    --border-hover: rgba(255,255,255,0.22);
-    --text: #f0ede8;
-    --muted: #7a7870;
-    --accent: #d4b896;
-    --accent-dim: rgba(212,184,150,0.12);
-  }
-
-  html, body {
-    min-height: 100vh;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 24px;
-  }
-
-  .wordmark {
-    font-family: 'Instrument Serif', serif;
-    font-size: 52px;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  .tagline {
-    font-size: 13px;
-    font-weight: 300;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    text-align: center;
-    margin-bottom: 64px;
-  }
-
-  .tagline .soon {
-    color: var(--accent);
-  }
-
-  .form-inner {
-    width: 100%;
-    max-width: 400px;
-  }
-
-  .field { margin-bottom: 14px; }
-
-  .field input {
-    width: 100%;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 14px 16px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    font-weight: 300;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .field input::placeholder { color: var(--muted); }
-  .field input:focus { border-color: var(--border-hover); }
-
-  .submit-wrap { margin-top: 24px; }
-
-  .submit-btn {
-    width: 100%;
-    background: var(--text);
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    padding: 15px 16px;
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-
-  .submit-btn:hover { opacity: 0.85; }
-
-  footer {
-    margin-top: 72px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-size: 11px;
-    font-weight: 300;
-    letter-spacing: 0.04em;
-    color: var(--muted);
-  }
-
-  footer a {
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  footer a:hover { color: var(--text); }
-
-  .footer-dot { opacity: 0.4; }
-
-  @media (max-width: 600px) {
-    .wordmark { font-size: 40px; }
-    .tagline { margin-bottom: 48px; }
-    footer { flex-direction: column; gap: 10px; margin-top: 56px; }
-    .footer-dot { display: none; }
-  }
-</style>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="page">
 
-  <div class="wordmark">Composite</div>
-  <div class="tagline">Bringing the frontier of markets. <span class="soon">Soon.</span></div>
 
-  <div class="form-section" style="width:100%;display:flex;justify-content:center;">
-    <div class="form-inner">
+<style>
+  /* Layout: the deck IS the page. Full-bleed split card under a heavy Geist headline, Sweep HUD above it.
+     Four short blocks scroll beneath. Neutral greys; green only for live/win signals. Single dark theme. */
+  :root{
+    --bg:#0a0a0b; --surface:#131315; --raised:#1b1b1e; --line:#26262a; --line-hi:#3a3a40;
+    --ink:#f4f4f5; --muted:#8b8b94; --faint:#5c5c66;
+    --live:#00e07a; --lose:#ff4d5e;
+    --sans:'Geist','Geist Fallback',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    color-scheme:dark;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .wrap{max-width:1120px;margin:0 auto;padding-inline:20px;}
+  h1,h2{text-wrap:balance;letter-spacing:-.03em;line-height:.98;}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:8px;}
+  .mono{font-family:var(--mono);}
+  .eyebrow{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
 
-      <div class="field">
-        <input type="text" placeholder="Name" id="fname" />
+  /* nav */
+  .nav{display:flex;align-items:center;justify-content:space-between;padding-block:18px;}
+  .wordmark{font:900 20px/1 var(--sans);letter-spacing:-.04em;text-decoration:none;}
+  .wordmark b{color:var(--live);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 24px;border-radius:14px;font:700 15px var(--sans);text-decoration:none;cursor:pointer;border:1px solid transparent;transition:transform .08s,filter .15s;white-space:nowrap;}
+  .btn:active{transform:scale(.97);}
+  .btn-ink{background:var(--live);color:#04140b;border-color:var(--live);box-shadow:0 0 0 1px rgba(0,224,122,.3),0 0 22px rgba(0,224,122,.35),0 10px 30px rgba(0,224,122,.18);}
+  .btn-ink:hover{filter:brightness(1.05);}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line-hi);}
+  .btn-ghost:hover{border-color:var(--muted);}
+  .nav .btn{min-height:40px;padding:0 16px;font-size:14px;border-radius:11px;}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:1fr;gap:10px;padding-block:8px 40px;justify-items:center;text-align:center;}
+  @media(min-width:900px){.hero{padding-block:36px 64px;}}
+  .hero .herocopy{display:flex;flex-direction:column;align-items:center;}
+  .hero h1{font-size:clamp(46px,9.5vw,96px);font-weight:900;}
+  .hero h1 span{color:var(--muted);}
+  .hero .sub{font-size:clamp(16px,2vw,19px);color:var(--muted);margin-top:18px;max-width:40ch;}
+  .hero .ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;justify-content:center;}
+  .hero .fine{font:400 12px var(--mono);color:var(--faint);margin-top:16px;letter-spacing:.02em;}
+  .pips{display:flex;gap:6px;margin-bottom:22px;justify-content:center;}
+  .pips i{width:26px;height:4px;border-radius:2px;background:var(--line);}
+  .pips i.on{background:var(--ink);}
+
+  /* Orbit — market cards circling right→left in 3D */
+  .orbit{width:100%;overflow:hidden;padding:26px 0 10px;position:relative;}
+  .otitle{text-align:center;font:900 clamp(28px,4.5vw,44px)/1 var(--sans);letter-spacing:-.03em;color:#fff;max-width:none;margin:0 auto 22px;position:relative;z-index:4;padding-inline:20px;}
+  .orbit::before,.orbit::after{content:"";position:absolute;top:0;bottom:0;width:18%;z-index:3;pointer-events:none;}
+  .orbit::before{left:0;background:linear-gradient(90deg,var(--bg),transparent);}
+  .orbit::after{right:0;background:linear-gradient(270deg,var(--bg),transparent);}
+  .stage{--w:300px;--h:470px;--r:600px;height:calc(var(--h) + 170px);perspective:2200px;perspective-origin:50% 45%;padding-top:10px;}
+  @media(max-width:700px){.stage{--w:230px;--h:360px;--r:380px;}}
+  .ring{position:relative;width:var(--w);height:var(--h);margin:0 auto;transform-style:preserve-3d;animation:spin 68s linear infinite;transform:rotateX(-6deg);}
+  .orbit:hover .ring{animation-play-state:paused;}
+  @keyframes spin{from{transform:rotateX(-6deg) rotateY(0deg);}to{transform:rotateX(-6deg) rotateY(-360deg);}}
+  .ocard{position:absolute;inset:0;transform:rotateY(var(--a)) translateZ(var(--r));backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+  .card{position:absolute;inset:0;border-radius:34px;overflow:hidden;background:#0a1226;box-shadow:0 0 0 1px rgba(0,224,122,.22),0 0 30px rgba(0,224,122,.08),0 30px 70px rgba(0,0,0,.6);}
+  .half{position:absolute;top:0;bottom:0;width:60%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 6px 100px;overflow:hidden;}
+  .half.a{left:0;clip-path:polygon(0 0,93% 0,76% 100%,0 100%);background:linear-gradient(180deg,var(--c1) 0%,color-mix(in srgb,var(--c1) 60%,#03060f) 100%);padding-right:19%;}
+  .half.b{right:0;clip-path:polygon(26% 0,100% 0,100% 100%,9% 100%);background:linear-gradient(180deg,var(--c1) 0%,color-mix(in srgb,var(--c1) 60%,#03060f) 100%);padding-left:19%;}
+  .half .wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-56%);font:900 200px/1 var(--sans);color:var(--c2);opacity:.2;pointer-events:none;letter-spacing:-.06em;}
+  .half.a .wm{left:44%;}
+  .half.b .wm{left:56%;}
+  .half .ab{font:900 54px/1 var(--sans);letter-spacing:-.04em;color:#fff;position:relative;text-shadow:0 2px 24px rgba(0,0,0,.5);}
+  .half .nm{font:500 12px var(--sans);color:#aab2c4;margin-top:6px;position:relative;}
+  .half .mult{font:900 36px/1 var(--sans);letter-spacing:-.03em;color:#fff;margin-top:22px;position:relative;text-shadow:0 2px 24px rgba(0,0,0,.5);}
+  .half .win{font:800 18px var(--sans);letter-spacing:-.02em;color:#5cf0a0;margin-top:6px;position:relative;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .half .win small{font:500 11px var(--sans);color:#aab2c4;margin-left:4px;letter-spacing:0;}
+  @media(max-width:700px){.half .ab{font-size:34px;}.half .mult{font-size:22px;}.half .win{font-size:12px;}.half .nm{font-size:9px;}.half .wm{font-size:150px;}}
+  .seam{position:absolute;left:50%;top:0;bottom:0;width:1.5px;background:rgba(120,140,190,.45);transform:translateX(-50%) skewX(-4.8deg);pointer-events:none;}
+  .at{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font:500 12px var(--sans);color:#aab2c4;pointer-events:none;}
+  .chip{position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;align-items:center;gap:7px;font:600 12px var(--sans);color:#aab2c4;white-space:nowrap;pointer-events:none;}
+  .chip svg{width:13px;height:13px;stroke:#aab2c4;fill:none;stroke-width:1.6;}
+  .chip .sep{color:#6f7787;}
+  .chip .lv{color:#ff5c6a;display:inline-flex;align-items:center;gap:5px;}
+  .chip .lv i{width:6px;height:6px;border-radius:50%;background:#ff5c6a;opacity:.7;animation:pulse 1.4s infinite;}
+  .chip .when{color:#aab2c4;font-weight:600;}
+  .clock{position:absolute;left:50%;top:44px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:6px;background:rgba(5,8,18,.7);border:1px solid rgba(150,160,210,.35);border-radius:99px;padding:5px 12px;font:700 12px var(--sans);color:#fff;white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums;backdrop-filter:blur(6px);}
+  .clock b{color:#ff5c6a;font-weight:700;}
+  .clock small{font:500 11px var(--sans);color:#aab2c4;}
+  @keyframes pulse{50%{opacity:.25}}
+  .chint{position:absolute;left:0;right:0;bottom:96px;display:flex;justify-content:center;gap:12px;font:500 10px var(--sans);color:#aab2c4;pointer-events:none;white-space:nowrap;}
+  .cbtns{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:40% 1fr;column-gap:9%;padding:14px 16px 16px 14px;}
+  .cbtns a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:64px;border-radius:18px;border:1.5px solid rgba(150,160,210,.5);background:rgba(8,12,30,.72);backdrop-filter:blur(8px);color:#c9d0e8;font:900 17px var(--sans);letter-spacing:-.02em;text-decoration:none;transition:filter .12s,transform .08s;}
+  .cbtns a small{font:500 10px var(--sans);color:#8a93ad;}
+    .cbtns a:hover{filter:brightness(1.25);}
+  .cbtns a:active{transform:scale(.97);}
+  .under{display:flex;justify-content:center;gap:12px;padding:0 4px 0;position:relative;z-index:4;font:400 11px var(--mono);color:var(--faint);flex-wrap:wrap;text-align:center;}
+  @media(prefers-reduced-motion:reduce){.ring{animation:none;transform:rotateX(-6deg) rotateY(-20deg);}}
+
+  /* blocks */
+  section{border-top:1px solid var(--line);padding-block:56px;}
+  @media(min-width:900px){section{padding-block:80px;}}
+  h2{font-size:clamp(30px,5vw,54px);font-weight:900;max-width:16ch;}
+  .lead{color:var(--muted);font-size:16px;margin-top:14px;max-width:50ch;}
+  .rules{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin-top:34px;}
+  @media(min-width:600px){.rules{grid-template-columns:repeat(2,1fr);}}
+  .rule{background:var(--bg);padding:28px 26px;min-width:0;}
+  .rule .g{font:900 30px/1 var(--sans);letter-spacing:-.04em;}
+  .rule .g.dim{color:var(--muted);}
+  .rule h3{font:700 16px var(--sans);margin-top:14px;}
+  .rule p{color:var(--muted);font-size:15px;margin-top:8px;max-width:38ch;}
+
+  .money{display:grid;grid-template-columns:1fr;gap:28px;margin-top:34px;align-items:start;}
+  @media(min-width:900px){.money{grid-template-columns:1fr 380px;gap:56px;}}
+  .facts{border-top:1px solid var(--line);}
+  .fact{display:grid;grid-template-columns:1fr;gap:4px;padding:15px 0;border-bottom:1px solid var(--line);}
+  @media(min-width:560px){.fact{grid-template-columns:170px 1fr;gap:18px;}}
+  .fact .k{font:700 14px var(--sans);}
+  .fact .v{color:var(--muted);font-size:14px;}
+  .ticket{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px;}
+  .ticket .big{font:900 40px/1 var(--sans);letter-spacing:-.04em;margin-top:10px;}
+  .ticket .big span{color:var(--muted);font-weight:700;font-size:22px;letter-spacing:0;}
+  .rows{margin-top:16px;border-top:1px dashed var(--line-hi);font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;}
+  .rows div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line-hi);}
+  .rows div span:first-child{color:var(--muted);}
+  .rows .w span:last-child{color:var(--live);}
+  .rows .l span:last-child{color:var(--lose);}
+  .ticket .foot2{font:400 11px var(--mono);color:var(--faint);margin-top:14px;line-height:1.55;}
+
+  .crew{margin-top:34px;display:grid;grid-template-columns:1fr;gap:26px;border:1px solid var(--line);border-radius:24px;padding:28px 22px;background:var(--surface);}
+  @media(min-width:900px){.crew{grid-template-columns:1.1fr .9fr;gap:48px;padding:40px;}}
+  .crew h3{font:900 clamp(28px,4vw,42px)/1 var(--sans);letter-spacing:-.03em;}
+  .crew p{color:var(--muted);margin-top:14px;font-size:15px;}
+  .steps{display:grid;gap:0;align-content:start;}
+  .step{display:grid;grid-template-columns:28px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);}
+  .step:last-child{border-bottom:0;}
+  .step .n{width:28px;height:28px;border-radius:50%;border:1px solid var(--line-hi);display:flex;align-items:center;justify-content:center;font:600 12px var(--mono);color:var(--muted);}
+  .step .t{font:700 15px var(--sans);}
+  .step .d{color:var(--muted);font-size:13.5px;margin-top:3px;}
+  .ph{display:inline-block;border:1px dashed var(--muted);color:var(--ink);border-radius:6px;padding:0 6px;font-family:var(--mono);font-size:13px;}
+  .nots{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;}
+  .nots span{font:500 11px var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:6px 11px;}
+  .nots span::before{content:"✕ ";color:var(--lose);}
+
+  .concept-tag{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-hi);border-radius:99px;padding:6px 12px;font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+  .concept-tag i{width:7px;height:7px;border-radius:2px;background:var(--muted);}
+  .cgrid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:30px;}
+  @media(min-width:700px){.cgrid{grid-template-columns:repeat(3,1fr);}}
+  .ccard{border:1px dashed var(--line-hi);border-radius:20px;padding:20px;min-width:0;position:relative;}
+  .ccard .q{font:900 24px/1.05 var(--sans);letter-spacing:-.03em;margin-top:12px;}
+  .ccard .opt{display:flex;gap:8px;margin-top:16px;}
+  .ccard .opt span{flex:1;text-align:center;border:1px solid var(--line);border-radius:12px;padding:10px 6px;font:700 13px var(--sans);color:var(--muted);}
+  .ccard::after{content:"CONCEPT";position:absolute;top:14px;right:14px;font:600 9px var(--mono);letter-spacing:.14em;color:var(--faint);}
+
+  .flow{display:grid;grid-template-columns:1fr;gap:10px;margin-top:34px;align-items:stretch;}
+  @media(min-width:900px){.flow{grid-template-columns:1fr auto 1.2fr auto 1fr;gap:0;}}
+  .node{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px 22px;min-width:0;display:flex;flex-direction:column;gap:10px;}
+  .node p{color:var(--muted);font-size:13.5px;margin-top:auto;}
+  .node-big{font:900 26px/1.05 var(--sans);letter-spacing:-.03em;}
+  .node.wallet{border-color:var(--line-hi);background:var(--raised);}
+  .node .node-big{font-size:24px;}
+  .addr{font:600 22px var(--mono);letter-spacing:-.01em;background:var(--bg);border:1px dashed var(--line-hi);border-radius:12px;padding:12px 14px;word-break:break-all;}
+  .copy{align-self:flex-start;background:none;border:1px solid var(--line-hi);color:var(--ink);border-radius:99px;padding:7px 12px;font:600 12px var(--mono);cursor:pointer;}
+  .copy:hover{border-color:var(--muted);}
+  .arrow{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 0;}
+  .arrow .amt{font:600 12px var(--mono);color:var(--muted);white-space:nowrap;}
+  .arrow i{display:block;width:2px;height:22px;background:linear-gradient(var(--line-hi),var(--muted));border-radius:2px;position:relative;}
+  .arrow i::after{content:"";position:absolute;left:50%;bottom:-2px;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateX(-50%) rotate(45deg);}
+  @media(min-width:900px){
+    .arrow{flex-direction:column;padding:0 14px;}
+    .arrow i{width:44px;height:2px;background:linear-gradient(90deg,var(--line-hi),var(--muted));}
+    .arrow i::after{left:auto;right:-2px;bottom:auto;top:50%;transform:translateY(-50%) rotate(-45deg);}
+  }
+
+  .sweep-cta{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:44px;text-align:center;}
+  .btn-sweep{width:100%;max-width:560px;min-height:64px;font-size:19px;font-weight:800;border-radius:18px;background:var(--live);color:#04140b;border-color:var(--live);box-shadow:0 0 0 1px rgba(0,224,122,.35),0 0 32px rgba(0,224,122,.45),0 18px 50px rgba(0,224,122,.25);}
+  .btn-sweep:hover{filter:brightness(1.06);box-shadow:0 0 0 1px rgba(0,224,122,.5),0 0 44px rgba(0,224,122,.6),0 18px 50px rgba(0,224,122,.3);}
+.capture{width:100%;max-width:560px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:left;}
+  .caprow{display:flex;gap:8px;}
+  .caprow input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line-hi);border-radius:14px;padding:0 16px;min-height:50px;font:500 15px var(--sans);color:var(--ink);outline:none;}
+  .caprow input::placeholder{color:var(--faint);}
+  .caprow input:focus{border-color:var(--muted);}
+  .caprow button{min-height:50px;padding:0 20px;border-radius:14px;border:1px solid var(--line-hi);background:transparent;color:var(--ink);font:700 14px var(--sans);cursor:pointer;}
+  .caprow button:hover{border-color:var(--muted);}
+  .caprow button:disabled{opacity:.6;cursor:default;}
+  .capmsg{font:400 12px var(--mono);color:var(--muted);min-height:16px;}
+  .capmsg.ok{color:var(--live);}
+  .capmsg.err{color:var(--lose);}
+  .sweep-fine{font:400 12px var(--mono);color:var(--muted);}
+  .fund-cta{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:28px;}
+  .fund-fine{font:400 12px var(--mono);color:var(--faint);max-width:52ch;}
+  .close{text-align:center;padding-block:72px;}
+  .close h2{margin:0 auto;}
+  .close .ctas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px;}
+  footer{border-top:1px solid var(--line);padding-block:28px 44px;}
+  .fine-grid{display:grid;grid-template-columns:1fr;gap:16px;font-size:12px;color:var(--faint);line-height:1.6;}
+  @media(min-width:700px){.fine-grid{grid-template-columns:repeat(3,1fr);gap:28px;}}
+  .fine-grid b{display:block;font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .fmeta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;font:400 11px var(--mono);color:var(--faint);}
+  .flinks a{text-decoration:none;color:var(--muted);}
+  .flinks a:hover{color:var(--ink);}
+  .flinks i{font-style:normal;margin:0 8px;}
+  .fmeta .tm{font:900 16px var(--sans);letter-spacing:-.03em;color:#fff;}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+
+<div class="wrap">
+  <nav class="nav">
+    <a class="wordmark" href="#top"><b>C</b>OMPOSITE<sup style="font-size:9px;vertical-align:top;margin-left:2px">™</sup></a>
+    <a class="btn btn-ink" href="https://www.composite.trade/welcome">Sign in to play</a>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="herocopy">
+      <h1>One market.<br><span>One swipe.</span></h1>
+      <p class="sub">The easiest, simplest, and most fun way to trade.</p>
+      <div class="ctas">
+        <a class="btn btn-ink" href="https://www.composite.trade/welcome">Sign in to play</a>
       </div>
-      <div class="field">
-        <input type="email" placeholder="Email" id="femail" />
-      </div>
-      <div class="field">
-        <input type="text" placeholder="Telegram (optional)" id="ftg" />
-      </div>
-
-      <div class="submit-wrap">
-        <button class="submit-btn" id="submitBtn">Request access →</button>
-      </div>
-
     </div>
-  </div>
-
-  <footer>
-    <a href="terms.html">Terms &amp; Conditions</a>
-    <span class="footer-dot">&middot;</span>
-    <a href="privacy.html">Privacy Policy</a>
-    <span class="footer-dot">&middot;</span>
-    <span>&copy; 2026 Composite. All rights reserved.</span>
-  </footer>
-
+  </header>
+</div>
+<div class="orbit" id="orbit">
+  <h2 class="otitle">One Touch Trading</h2>
+  <div class="stage"><div class="ring" id="ring"></div></div>
 </div>
 
+<section id="play">
+  <div class="wrap">
+    <span class="eyebrow">How it plays</span>
+    <h2 style="margin-top:12px">Nothing to read. Four moves.</h2>
+    <div class="rules">
+      <div class="rule"><div class="g">← →</div><h3>Pick a side</h3><p>Tap or swipe toward the team you think wins, at your bet size. It fills at the payout shown.</p></div>
+      <div class="rule"><div class="g dim">↓</div><h3>Pass</h3><p>Not your game? Swipe down. No charge, next card.</p></div>
+      <div class="rule"><div class="g">2×</div><h3>Hold for double</h3><p>Hold a side to put twice your bet on it. Same odds, bigger ticket.</p></div>
+      <div class="rule"><div class="g dim">●</div><h3>Live now</h3><p>Deal in games already in progress. The shortest wait between your call and the result.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="fund">
+  <div class="wrap">
+    <span class="eyebrow">Getting in</span>
+    <h2 style="margin-top:12px">Sign in with email. Fund your wallet.</h2>
+
+    <div class="flow">
+      <div class="node">
+        <span class="eyebrow">1 · Sign in</span>
+        <div class="node-big">Sign in with your email</div>
+        <p>A Composite wallet is created for you automatically. No seed phrase, no extension.</p>
+      </div>
+      <div class="arrow"><i></i></div>
+      <div class="node wallet">
+        <span class="eyebrow">2 · Fund your wallet</span>
+        <div class="node-big">Send funds to your Composite hosted wallet</div>
+        <p>Send USDC from any wallet or exchange. It shows up as dollars in your credit.</p>
+      </div>
+      <div class="arrow"><i></i></div>
+      <div class="node credit">
+        <span class="eyebrow">3 · Play</span>
+        <div class="node-big">Start playing. Start winning.</div>
+        <p>Cash out anytime.</p>
+      </div>
+    </div>
+
+    <div class="sweep-cta">
+      <form class="capture" id="capture" novalidate>
+        <label for="capEmail" class="eyebrow">Get updates</label>
+        <div class="caprow">
+          <input type="email" id="capEmail" name="email" placeholder="you@school.edu" autocomplete="email" required>
+          <button type="submit" id="capBtn">Join</button>
+        </div>
+        <div class="capmsg" id="capMsg" aria-live="polite"></div>
+      </form>
+      <a class="btn btn-sweep" href="https://www.composite.trade/welcome">Sign in to Sweep</a>
+      <span class="sweep-fine">Email, Google, or Apple. A wallet is created for you automatically.</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap fmeta"><span>© 2026 Composite. All rights reserved.</span><span class="tm">Composite™</span></div>
+</footer>
+
 <script>
-var submitted = false;
-document.getElementById('submitBtn').addEventListener('click', function(e) {
-  e.preventDefault();
-  if (submitted) return;
-
-  var name = document.getElementById('fname').value.trim();
-  var email = document.getElementById('femail').value.trim();
-  var tg = document.getElementById('ftg').value.trim();
-
-  if (!name) {
-    alert('Please enter your name.');
-    return;
-  }
-  if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
-    alert('Please enter a valid email address.');
-    return;
-  }
-
-  submitted = true;
-  var btn = this;
-  btn.textContent = 'Submitting...';
-  btn.style.opacity = '0.6';
-  btn.disabled = true;
-
-  var params = 'name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&telegram=' + encodeURIComponent(tg) + '&roles=';
-  var url = 'https://script.google.com/macros/s/AKfycbyKsEwSSHpmhlR2ALK5ppkYH5X1NLUaFPxrRPJ55O9DOofsDJDLsY2lfxDjzaIjxNdjUQ/exec?' + params;
-
-  fetch(url, { mode: 'no-cors' }).then(function() {
-    document.querySelector('.form-section').innerHTML = '<div style="max-width:480px;margin:0 auto;text-align:center;padding:40px 32px 0">' +
-      '<div style="width:56px;height:56px;border-radius:50%;background:var(--accent-dim);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 28px">' +
-        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' +
-      '</div>' +
-      '<h2 style="font-family:Instrument Serif,serif;font-size:36px;color:var(--text);margin-bottom:12px;letter-spacing:-0.02em">You\'re on the list</h2>' +
-      '<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0 auto;font-weight:300">We\'ll be in touch.</p>' +
+(function(){
+  var DECK=[
+    {lg:'NFL',live:true,clk:{p:'Q3',t:522},a:{ab:'KC',name:'Kansas City Chiefs',c:'#2a0d17',c2:'#e31837',wm:'K'},b:{ab:'BUF',name:'Buffalo Bills',c:'#0b1a4a',c2:'#c60c30',wm:'B'},ma:2.10,mb:1.72},
+    {lg:'CFB',live:false,when:'Sat 12:00 PM',a:{ab:'SYR',name:'Syracuse',c:'#0b1a4a',c2:'#d44500',wm:'S'},b:{ab:'CONN',name:'UConn',c:'#0d1526',c2:'#7c8ba8',wm:'C'},ma:1.39,mb:2.93},
+    {lg:'CFB',live:true,clk:{p:'Q2',t:731},a:{ab:'OSU',name:'Ohio State',c:'#2a0d17',c2:'#bb0000',wm:'O'},b:{ab:'MICH',name:'Michigan',c:'#0b1a4a',c2:'#ffcb05',wm:'M'},ma:1.55,mb:2.60},
+    {lg:'NFL',live:true,clk:{p:'Q4',t:135},a:{ab:'DAL',name:'Dallas Cowboys',c:'#0b1a4a',c2:'#869397',wm:'D'},b:{ab:'PHI',name:'Philadelphia Eagles',c:'#0a2a25',c2:'#004c54',wm:'E'},ma:2.85,mb:1.40},
+    {lg:'CFB',live:true,clk:{p:'Q3',t:284},a:{ab:'UGA',name:'Georgia',c:'#2a0d17',c2:'#ba0c2f',wm:'G'},b:{ab:'ALA',name:'Alabama',c:'#20090f',c2:'#9e1b32',wm:'A'},ma:1.80,mb:2.05},
+    {lg:'NFL',live:true,clk:{p:'Q1',t:412},a:{ab:'SF',name:'San Francisco 49ers',c:'#2a0d17',c2:'#b3995d',wm:'S'},b:{ab:'SEA',name:'Seattle Seahawks',c:'#0a1a2e',c2:'#69be28',wm:'S'},ma:1.48,mb:2.70},
+    {lg:'CFB',live:true,clk:{p:'Q4',t:598},a:{ab:'TEX',name:'Texas',c:'#2a1408',c2:'#bf5700',wm:'T'},b:{ab:'OU',name:'Oklahoma',c:'#20090f',c2:'#841617',wm:'O'},ma:1.62,mb:2.40},
+    {lg:'NFL',live:true,clk:{p:'Q2',t:47},a:{ab:'DET',name:'Detroit Lions',c:'#0a1a2e',c2:'#0076b6',wm:'L'},b:{ab:'GB',name:'Green Bay Packers',c:'#0a1f14',c2:'#ffb612',wm:'G'},ma:1.95,mb:1.90}
+  ];
+  var bet=5;
+  function $(n){return '$'+n.toFixed(2);}
+  function fmt(t){var m=Math.floor(t/60),x=t%60;return m+':'+(x<10?'0':'')+x;}
+  function ball(g){ if(g.lg==='CFB') return '<svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h12l-2.5 3.5L17 11H5"/></svg>';
+    return '<svg viewBox="0 0 24 24"><path d="M4.5 19.5c-2-2-1.5-9 3-13.5s11.5-5 13.5-3 1.5 9-3 13.5-11.5 5-13.5 3z"/><path d="M8 16l8-8M9.5 12.5l2 2M12 10l2 2"/></svg>'; }
+  function cardHTML(g){
+    return '<div class="card">'+
+      '<div class="half a" style="--c1:'+g.a.c+';--c2:'+g.a.c2+'"><span class="wm">'+g.a.wm+'</span><div class="ab">'+g.a.ab+'</div><div class="nm">'+g.a.name+'</div><div class="mult">'+g.ma.toFixed(2)+'×</div><div class="win">+'+$(g.ma*bet-bet)+'<small>to win</small></div></div>'+
+      '<div class="half b" style="--c1:'+g.b.c+';--c2:'+g.b.c2+'"><span class="wm">'+g.b.wm+'</span><div class="ab">'+g.b.ab+'</div><div class="nm">'+g.b.name+'</div><div class="mult">'+g.mb.toFixed(2)+'×</div><div class="win">+'+$(g.mb*bet-bet)+'<small>to win</small></div></div>'+
+      '<div class="seam"></div><div class="at">@</div>'+
+      '<div class="chip">'+ball(g)+'<span>'+g.lg+'</span><span class="sep">·</span>'+(g.live?'<span class="lv"><i></i>LIVE</span>':'<span class="when">'+g.when+'</span>')+'</div>'+
+      '<div class="chint"><span>click a side to bet</span><span>hold = 2×</span></div>'+
+      (g.live&&g.clk?'<div class="clock" data-p="'+g.clk.p+'" data-t="'+g.clk.t+'"><b>'+g.clk.p+'</b>'+fmt(g.clk.t)+'<small>left</small></div>':'')+
+      '<div class="cbtns"><a href="https://www.composite.trade/welcome">'+g.a.ab+'<small>hold = 2×</small></a><a href="https://www.composite.trade/welcome">'+g.b.ab+'<small>hold = 2×</small></a></div>'+
     '</div>';
-  }).catch(function() {
-    submitted = false;
-    btn.textContent = 'Request access →';
-    btn.style.opacity = '1';
-    btn.disabled = false;
-    alert('Something went wrong. Please try again.');
-  });
-});
+  }
+  var ring=document.getElementById('ring'), n=DECK.length, html='';
+  for(var i=0;i<n;i++){ html+='<div class="ocard" style="--a:'+(i*360/n)+'deg">'+cardHTML(DECK[i])+'</div>'; }
+  ring.innerHTML=html;
+  var clocks=ring.querySelectorAll('.clock');
+  setInterval(function(){clocks.forEach(function(c){var t=+c.dataset.t;if(t>0){t--;c.dataset.t=t;c.innerHTML='<b>'+c.dataset.p+'</b>'+fmt(t)+'<small>left</small>';}});},1000);
+  var cap=document.getElementById('capture');
+  if(cap){
+    var capEmail=document.getElementById('capEmail'), capBtn=document.getElementById('capBtn'), capMsg=document.getElementById('capMsg'), sent=false;
+    cap.addEventListener('submit',function(e){
+      e.preventDefault(); if(sent) return;
+      var email=capEmail.value.trim();
+      if(!email||email.indexOf('@')===-1||email.indexOf('.')===-1){capMsg.className='capmsg err';capMsg.textContent='Enter a valid email.';return;}
+      sent=true; capBtn.disabled=true; capBtn.textContent='Sending…'; capMsg.className='capmsg'; capMsg.textContent='';
+      var url='https://script.google.com/macros/s/AKfycbyKsEwSSHpmhlR2ALK5ppkYH5X1NLUaFPxrRPJ55O9DOofsDJDLsY2lfxDjzaIjxNdjUQ/exec?name=&email='+encodeURIComponent(email)+'&telegram=&roles=landing';
+      fetch(url,{mode:'no-cors'}).then(function(){capMsg.className='capmsg ok';capMsg.textContent="You're on the list.";capBtn.textContent='Joined';capEmail.disabled=true;})
+        .catch(function(){sent=false;capBtn.disabled=false;capBtn.textContent='Join';capMsg.className='capmsg err';capMsg.textContent='Something went wrong. Try again.';});
+    });
+  }
+  var cp=document.getElementById('copy');
+  if(cp){cp.onclick=function(){var t='0x7a3F…9c21';
+    (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t):Promise.reject()).then(function(){cp.textContent='Copied';},function(){cp.textContent='Copy failed';});
+    setTimeout(function(){cp.textContent='Copy address';},1800);};}
+})();
 </script>
 
 </body>
