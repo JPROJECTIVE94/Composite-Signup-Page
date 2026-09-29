@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0b">
-<meta name="description" content="Composite. One market at a time. Swipe to back it. Real-money sports prediction routed to Polymarket.">
-<meta property="og:title" content="Composite — one market at a time. Swipe to back it.">
-<meta property="og:description" content="Your take on the game, on the record, in one swipe. Real money, $2 minimum.">
+<meta name="description" content="Composite. One market. One swipe. The easiest, simplest, and most fun way to trade live sports.">
+<meta property="og:title" content="Composite — One market. One swipe.">
+<meta property="og:description" content="The easiest, simplest, and most fun way to trade. Live NFL and college football, one touch.">
 <title>Composite</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,48 +64,46 @@
 
   /* Orbit — market cards circling right→left in 3D */
   .orbit{width:100%;overflow:hidden;padding:26px 0 10px;position:relative;}
+  .stage{pointer-events:none;user-select:none;}
   .otitle{text-align:center;font:900 clamp(28px,4.5vw,44px)/1 var(--sans);letter-spacing:-.03em;color:#fff;max-width:none;margin:0 auto 22px;position:relative;z-index:4;padding-inline:20px;}
   .orbit::before,.orbit::after{content:"";position:absolute;top:0;bottom:0;width:18%;z-index:3;pointer-events:none;}
   .orbit::before{left:0;background:linear-gradient(90deg,var(--bg),transparent);}
   .orbit::after{right:0;background:linear-gradient(270deg,var(--bg),transparent);}
-  .stage{--w:300px;--h:470px;--r:600px;height:calc(var(--h) + 170px);perspective:2200px;perspective-origin:50% 45%;padding-top:10px;}
-  @media(max-width:700px){.stage{--w:230px;--h:360px;--r:380px;}}
+  .stage{--w:220px;--h:345px;--r:460px;height:calc(var(--h) + 110px);perspective:2200px;perspective-origin:50% 45%;padding-top:10px;}
+  @media(max-width:700px){.stage{--w:200px;--h:315px;--r:330px;}}
   .ring{position:relative;width:var(--w);height:var(--h);margin:0 auto;transform-style:preserve-3d;animation:spin 68s linear infinite;transform:rotateX(-6deg);}
-  .orbit:hover .ring{animation-play-state:paused;}
   @keyframes spin{from{transform:rotateX(-6deg) rotateY(0deg);}to{transform:rotateX(-6deg) rotateY(-360deg);}}
   .ocard{position:absolute;inset:0;transform:rotateY(var(--a)) translateZ(var(--r));backface-visibility:hidden;-webkit-backface-visibility:hidden;}
-  .card{position:absolute;inset:0;border-radius:34px;overflow:hidden;background:#0a1226;box-shadow:0 0 0 1px rgba(0,224,122,.22),0 0 30px rgba(0,224,122,.08),0 30px 70px rgba(0,0,0,.6);}
-  .half{position:absolute;top:0;bottom:0;width:60%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 6px 100px;overflow:hidden;}
+  .card{position:absolute;inset:0;border-radius:26px;overflow:hidden;background:#0a1226;box-shadow:0 0 0 1px rgba(0,224,122,.22),0 0 30px rgba(0,224,122,.08),0 30px 70px rgba(0,0,0,.6);}
+  .half{position:absolute;top:0;bottom:0;width:60%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 6px 76px;overflow:hidden;}
   .half.a{left:0;clip-path:polygon(0 0,93% 0,76% 100%,0 100%);background:linear-gradient(180deg,var(--c1) 0%,color-mix(in srgb,var(--c1) 60%,#03060f) 100%);padding-right:19%;}
   .half.b{right:0;clip-path:polygon(26% 0,100% 0,100% 100%,9% 100%);background:linear-gradient(180deg,var(--c1) 0%,color-mix(in srgb,var(--c1) 60%,#03060f) 100%);padding-left:19%;}
-  .half .wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-56%);font:900 200px/1 var(--sans);color:var(--c2);opacity:.2;pointer-events:none;letter-spacing:-.06em;}
+  .half .wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-56%);font:900 150px/1 var(--sans);color:var(--c2);opacity:.2;pointer-events:none;letter-spacing:-.06em;}
   .half.a .wm{left:44%;}
   .half.b .wm{left:56%;}
-  .half .ab{font:900 54px/1 var(--sans);letter-spacing:-.04em;color:#fff;position:relative;text-shadow:0 2px 24px rgba(0,0,0,.5);}
-  .half .nm{font:500 12px var(--sans);color:#aab2c4;margin-top:6px;position:relative;}
-  .half .mult{font:900 36px/1 var(--sans);letter-spacing:-.03em;color:#fff;margin-top:22px;position:relative;text-shadow:0 2px 24px rgba(0,0,0,.5);}
-  .half .win{font:800 18px var(--sans);letter-spacing:-.02em;color:#5cf0a0;margin-top:6px;position:relative;font-variant-numeric:tabular-nums;white-space:nowrap;}
-  .half .win small{font:500 11px var(--sans);color:#aab2c4;margin-left:4px;letter-spacing:0;}
-  @media(max-width:700px){.half .ab{font-size:34px;}.half .mult{font-size:22px;}.half .win{font-size:12px;}.half .nm{font-size:9px;}.half .wm{font-size:150px;}}
+  .half .ab{font:900 38px/1 var(--sans);letter-spacing:-.04em;color:#fff;position:relative;text-shadow:0 2px 24px rgba(0,0,0,.5);}
+  .half .nm{font:500 10px var(--sans);color:#aab2c4;margin-top:6px;position:relative;}
+  .half .mult{font:900 26px/1 var(--sans);letter-spacing:-.03em;color:#fff;margin-top:16px;position:relative;text-shadow:0 2px 24px rgba(0,0,0,.5);}
+  .half .win{font:800 13px var(--sans);letter-spacing:-.02em;color:#5cf0a0;margin-top:6px;position:relative;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .half .win small{font:500 9px var(--sans);color:#aab2c4;margin-left:4px;letter-spacing:0;}
+  @media(max-width:700px){.half .ab{font-size:34px;}.half .mult{font-size:22px;}.half .win{font-size:12px;}.half .nm{font-size:9px;}.half .wm{font-size:130px;}}
   .seam{position:absolute;left:50%;top:0;bottom:0;width:1.5px;background:rgba(120,140,190,.45);transform:translateX(-50%) skewX(-4.8deg);pointer-events:none;}
   .at{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font:500 12px var(--sans);color:#aab2c4;pointer-events:none;}
-  .chip{position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;align-items:center;gap:7px;font:600 12px var(--sans);color:#aab2c4;white-space:nowrap;pointer-events:none;}
+  .chip{position:absolute;left:50%;top:14px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;font:600 11px var(--sans);color:#aab2c4;white-space:nowrap;pointer-events:none;}
   .chip svg{width:13px;height:13px;stroke:#aab2c4;fill:none;stroke-width:1.6;}
   .chip .sep{color:#6f7787;}
   .chip .lv{color:#ff5c6a;display:inline-flex;align-items:center;gap:5px;}
   .chip .lv i{width:6px;height:6px;border-radius:50%;background:#ff5c6a;opacity:.7;animation:pulse 1.4s infinite;}
   .chip .when{color:#aab2c4;font-weight:600;}
-  .clock{position:absolute;left:50%;top:44px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:6px;background:rgba(5,8,18,.7);border:1px solid rgba(150,160,210,.35);border-radius:99px;padding:5px 12px;font:700 12px var(--sans);color:#fff;white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums;backdrop-filter:blur(6px);}
+  .clock{position:absolute;left:50%;top:38px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:6px;background:rgba(5,8,18,.7);border:1px solid rgba(150,160,210,.35);border-radius:99px;padding:5px 12px;font:700 12px var(--sans);color:#fff;white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums;backdrop-filter:blur(6px);}
   .clock b{color:#ff5c6a;font-weight:700;}
   .clock small{font:500 11px var(--sans);color:#aab2c4;}
   @keyframes pulse{50%{opacity:.25}}
-  .chint{position:absolute;left:0;right:0;bottom:96px;display:flex;justify-content:center;gap:12px;font:500 10px var(--sans);color:#aab2c4;pointer-events:none;white-space:nowrap;}
-  .cbtns{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:40% 1fr;column-gap:9%;padding:14px 16px 16px 14px;}
-  .cbtns a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:64px;border-radius:18px;border:1.5px solid rgba(150,160,210,.5);background:rgba(8,12,30,.72);backdrop-filter:blur(8px);color:#c9d0e8;font:900 17px var(--sans);letter-spacing:-.02em;text-decoration:none;transition:filter .12s,transform .08s;}
-  .cbtns a small{font:500 10px var(--sans);color:#8a93ad;}
-    .cbtns a:hover{filter:brightness(1.25);}
-  .cbtns a:active{transform:scale(.97);}
-  .under{display:flex;justify-content:center;gap:12px;padding:0 4px 0;position:relative;z-index:4;font:400 11px var(--mono);color:var(--faint);flex-wrap:wrap;text-align:center;}
+  .chint{position:absolute;left:0;right:0;bottom:72px;display:flex;justify-content:center;gap:12px;font:500 10px var(--sans);color:#aab2c4;pointer-events:none;white-space:nowrap;}
+  .cbtns{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:40% 1fr;column-gap:9%;padding:10px 12px 12px 10px;}
+  .cbtns span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:48px;border-radius:14px;border:1.5px solid rgba(150,160,210,.5);background:rgba(8,12,30,.72);backdrop-filter:blur(8px);color:#c9d0e8;font:900 14px var(--sans);letter-spacing:-.02em;text-decoration:none;transition:filter .12s,transform .08s;}
+  .cbtns span small{font:500 9px var(--sans);color:#8a93ad;}
+    .under{display:flex;justify-content:center;gap:12px;padding:0 4px 0;position:relative;z-index:4;font:400 11px var(--mono);color:var(--faint);flex-wrap:wrap;text-align:center;}
   @media(prefers-reduced-motion:reduce){.ring{animation:none;transform:rotateX(-6deg) rotateY(-20deg);}}
 
   /* blocks */
@@ -231,7 +229,7 @@
     </div>
   </header>
 </div>
-<div class="orbit" id="orbit">
+<div class="orbit" id="orbit" aria-hidden="true">
   <h2 class="otitle">One Touch Trading</h2>
   <div class="stage"><div class="ring" id="ring"></div></div>
 </div>
@@ -284,7 +282,7 @@
         <div class="capmsg" id="capMsg" aria-live="polite"></div>
       </form>
       <a class="btn btn-sweep" href="https://www.composite.trade/welcome">Sign in to Sweep</a>
-      <span class="sweep-fine">Email, Google, or Apple. A wallet is created for you automatically.</span>
+      <span class="sweep-fine">Sign in with your email. A wallet is created for you automatically.</span>
     </div>
   </div>
 </section>
@@ -318,7 +316,7 @@
       '<div class="chip">'+ball(g)+'<span>'+g.lg+'</span><span class="sep">·</span>'+(g.live?'<span class="lv"><i></i>LIVE</span>':'<span class="when">'+g.when+'</span>')+'</div>'+
       '<div class="chint"><span>click a side to bet</span><span>hold = 2×</span></div>'+
       (g.live&&g.clk?'<div class="clock" data-p="'+g.clk.p+'" data-t="'+g.clk.t+'"><b>'+g.clk.p+'</b>'+fmt(g.clk.t)+'<small>left</small></div>':'')+
-      '<div class="cbtns"><a href="https://www.composite.trade/welcome">'+g.a.ab+'<small>hold = 2×</small></a><a href="https://www.composite.trade/welcome">'+g.b.ab+'<small>hold = 2×</small></a></div>'+
+      '<div class="cbtns"><span>'+g.a.ab+'<small>hold = 2×</small></span><span>'+g.b.ab+'<small>hold = 2×</small></span></div>'+
     '</div>';
   }
   var ring=document.getElementById('ring'), n=DECK.length, html='';
